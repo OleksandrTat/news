@@ -1,65 +1,71 @@
-import Image from "next/image";
+import Header from '../components/Header'
+import Hero from '../components/Hero'
+import Sidebar from '../components/Sidebar'
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+
+export default function Page() {
+return (
+<main>
+<Header />
+
+
+<div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
+<section className="bg-card rounded-[14px] p-8 shadow-md-custom">
+<Hero />
+
+
+<section className="mt-8">
+<div className="border-l-4 border-accent pl-3 mb-4">
+<h3 className="text-accent uppercase tracking-widest text-sm">Popular</h3>
+</div>
+
+
+<div className="grid gap-4">
+{['Cómo sacar el máximo provecho a las prácticas','Resultados del torneo interfacultades','Becas y ayudas: plazos abiertos'].map((t)=> (
+<article key={t} className="flex gap-4 items-center p-4 rounded-lg bg-white border border-[#eef3f6] hover:shadow-md-custom transition-transform">
+<div className="w-[110px] h-[72px] rounded-md bg-gradient-to-b from-[--soft] to-[#ffeaf0]" />
+<div>
+<h4 className="text-[15px] font-semibold">{t}</h4>
+<p className="text-sm text-muted">Resumen rápido y utilidad para estudiantes.</p>
+</div>
+</article>
+))}
+</div>
+</section>
+
+
+<section className="mt-8 grid gap-4 lg:grid-cols-2">
+<div className="bg-white rounded-lg p-4 border border-[#eef3f6] hover:shadow-md-custom transition-transform">
+<div className="h-[140px] rounded-md bg-gradient-to-br from-[#ffeaf0] to-[#f9dbe2]" />
+<h4 className="mt-3">Evento destacado: Conferencia internacional</h4>
+<p className="text-sm text-muted mt-1">Ponentes de primer nivel, entrada gratuita previa inscripción.</p>
+</div>
+
+
+<div className="flex flex-col gap-3">
+<div className="bg-white rounded-lg p-3 border border-[#eef3f6]">
+<div className="h-20 rounded-md bg-gradient-to-br from-[#ffeaf0] to-[#f9dbe2]" />
+<h5 className="mt-2">Convocatoria: Voluntariado</h5>
+<p className="text-sm text-muted mt-1">Participa en la organización de eventos.</p>
+</div>
+<div className="bg-white rounded-lg p-3 border border-[#eef3f6]">
+<div className="h-20 rounded-md bg-gradient-to-br from-[#ffeaf0] to-[#f9dbe2]" />
+<h5 className="mt-2">Aviso importante</h5>
+<p className="text-sm text-muted mt-1">Cambio de horarios en secretaría.</p>
+</div>
+</div>
+</section>
+
+
+<footer className="mt-8 text-center text-sm text-muted border-t pt-4">© 2025 Portal Noticias — Diseño Pro++</footer>
+</section>
+
+
+<aside>
+<Sidebar />
+</aside>
+</div>
+</main>
+)
 }
+
