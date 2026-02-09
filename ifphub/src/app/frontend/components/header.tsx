@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link"
 import CreateNewsButton from "@/app/frontend/components/create-news-button"
 
@@ -23,6 +25,12 @@ export default function Header() {
             className="w-64 max-w-[40vw] p-2 rounded-md border border-[#dde5ea] bg-[#f9fcfd] cursor-pointer focus:outline-none"
             readOnly
           />
+        </Link>
+        <Link
+          href="/search"
+          className="px-3 py-2 rounded-md text-xs font-semibold border border-[#dde5ea] bg-white hover:border-accent/40 hover:text-accent transition"
+        >
+          Buscar
         </Link>
         <CreateNewsButton
           className="px-3 py-2 rounded-md text-xs font-semibold bg-accent text-white hover:opacity-90 transition"

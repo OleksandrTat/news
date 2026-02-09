@@ -62,6 +62,12 @@ export default async function Page(props: { searchParams: Promise<any> }) {
 
             {/* Indicador de scroll */}
             <div className="ml-auto flex items-center gap-3">
+              <Link
+                href="/search"
+                className="inline-flex items-center px-3 py-1.5 rounded-md border border-[#dde5ea] bg-white text-xs font-semibold hover:border-accent/40 hover:text-accent transition"
+              >
+                Buscar
+              </Link>
               <CreateNewsButton
                 className="inline-flex items-center px-3 py-1.5 rounded-md bg-accent text-white text-xs font-semibold hover:opacity-90 transition"
                 uid={uid}
