@@ -6,17 +6,17 @@ export default function SearchPage() {
     {
       title: 'Investigadores del campus desarrollan sistema de IA para análisis ambiental',
       desc: 'El nuevo modelo utiliza datos satelitales para predecir contaminación y cambio climático.',
-      meta: 'Publicado el 6 noviembre 2025 • Categoría: Tecnología'
+      meta: 'Publicado el 6 noviembre 2026 • Categoría: Tecnología'
     },
     {
       title: 'Seminario sobre Inteligencia Artificial aplicada a la educación',
       desc: 'Docentes y expertos compartieron experiencias sobre herramientas de IA en el aula.',
-      meta: 'Publicado el 3 noviembre 2025 • Categoría: Educación'
+      meta: 'Publicado el 3 noviembre 2026 • Categoría: Educación'
     },
     {
       title: 'Club de programación organiza hackathon centrado en IA generativa',
       desc: 'Participarán más de 200 estudiantes de distintas facultades.',
-      meta: 'Publicado el 29 octubre 2025 • Categoría: Innovación'
+      meta: 'Publicado el 29 octubre 2026 • Categoría: Innovación'
     }
   ]
 
@@ -69,7 +69,7 @@ export default function SearchPage() {
       </div>
 
       <footer className="mt-10 text-center text-sm text-muted border-t pt-4">
-        © 2025 Portal Noticias — Diseño Pro++
+        © 2026 Portal Noticias — Diseño Pro++
       </footer>
     </main>
   )

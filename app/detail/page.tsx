@@ -15,7 +15,7 @@ export default function DetailPage() {
               Feria tecnológica del campus: innovación y talento en acción
             </h1>
             <p className="text-sm text-muted mt-1">
-              Publicado el 8 de noviembre de 2025 • Por Redacción Campus
+              Publicado el 8 de noviembre de 2026 • Por Redacción Campus
             </p>
           </div>
 
@@ -49,7 +49,7 @@ export default function DetailPage() {
           </section>
 
           <footer className="mt-10 text-center text-sm text-muted border-t pt-4">
-            © 2025 Portal Noticias — Diseño Pro++
+            © 2026 Portal Noticias — Diseño Pro++
           </footer>
         </article>
 

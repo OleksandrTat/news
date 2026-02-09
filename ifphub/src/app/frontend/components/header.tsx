@@ -23,10 +23,6 @@ export default function Header() {
             readOnly
           />
         </Link>
-
-        <Link href="/detail">
-          <button className="px-4 py-2 rounded-md font-bold bg-accent text-white hover:opacity-90">Publicar</button>
-        </Link>
       </div>
     </header>
   )

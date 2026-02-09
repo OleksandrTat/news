@@ -57,7 +57,7 @@ return (
 </section>
 
 
-<footer className="mt-8 text-center text-sm text-muted border-t pt-4">© 2025 Portal Noticias — Diseño Pro++</footer>
+<footer className="mt-8 text-center text-sm text-muted border-t pt-4">© 2026 Portal Noticias — Diseño Pro++</footer>
 </section>
 
 
