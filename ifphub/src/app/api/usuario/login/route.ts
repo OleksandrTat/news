@@ -53,6 +53,16 @@ export async function POST(req: Request) {
     };
   }
 
+  if (!profile.rol) {
+    const { data: rpcRole, error: rpcError } = await supabase.rpc(
+      "fn_get_rol_usuario",
+      { p_id_usuario: uid }
+    );
+    if (!rpcError && rpcRole) {
+      profile.rol = rpcRole;
+    }
+  }
+
   return NextResponse.json({
     success: true,
     usuario: {

@@ -2,6 +2,19 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@theme {
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-soft: var(--soft);
+  --color-muted: var(--muted);
+  --color-card: var(--card);
+  --color-bg: var(--bg);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+}
 
 :root{
 --primary: #123d58;
@@ -44,6 +57,12 @@ color: var(--primary);
 .bg-card{ background: var(--card) }
 .shadow-md-custom{ box-shadow: 0 10px 30px rgba(18,61,88,0.08) }
 .shadow-sm-custom{ box-shadow: 0 4px 10px rgba(18,61,88,0.05) }
+.bg-primary{ background: var(--primary) }
+.text-primary{ color: var(--primary) }
+.border-primary{ border-color: var(--primary) }
+.bg-accent{ background: var(--accent) }
+.text-accent{ color: var(--accent) }
+.border-accent{ border-color: var(--accent) }
 
 
 /* responsive tweaks */

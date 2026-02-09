@@ -22,6 +22,7 @@ export default function AuthGuard({
     const run = async () => {
       const storedUid = sessionStorage.getItem("uid");
       const storedSig = sessionStorage.getItem("sig");
+      const storedRoleUid = sessionStorage.getItem("ifphub_user_role_uid");
       let storedRole =
         sessionStorage.getItem("ifphub_user_role")?.trim().toLowerCase() ?? "";
 
@@ -29,6 +30,11 @@ export default function AuthGuard({
       if (!storedUid || !storedSig) {
         router.replace("/");
         return;
+      }
+
+      if (storedRole && storedRoleUid && storedRoleUid !== String(storedUid)) {
+        sessionStorage.removeItem("ifphub_user_role");
+        storedRole = "";
       }
 
       const urlUid = searchParams.get("uid");
@@ -57,6 +63,7 @@ export default function AuthGuard({
                 .trim()
                 .toLowerCase();
               if (role) {
+                sessionStorage.setItem("ifphub_user_role_uid", storedUid);
                 sessionStorage.setItem("ifphub_user_role", role);
                 storedRole = role;
               }

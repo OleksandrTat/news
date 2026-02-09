@@ -25,6 +25,7 @@ export default function CreateNewsButton({
     const run = async () => {
       const storedUid = sessionStorage.getItem("uid");
       const storedSig = sessionStorage.getItem("sig");
+      const storedRoleUid = sessionStorage.getItem("ifphub_user_role_uid");
       const uid = String(uidProp ?? storedUid ?? "").trim();
       const sig = String(sigProp ?? storedSig ?? "").trim();
       let role =
@@ -33,6 +34,11 @@ export default function CreateNewsButton({
       if (!uid || !sig) {
         if (active) setVisible(false);
         return;
+      }
+
+      if (role && storedRoleUid && storedRoleUid !== uid) {
+        sessionStorage.removeItem("ifphub_user_role");
+        role = "";
       }
 
       if (!role || !NEWS_CREATOR_ROLES.includes(role as (typeof NEWS_CREATOR_ROLES)[number])) {
@@ -47,6 +53,7 @@ export default function CreateNewsButton({
               .trim()
               .toLowerCase();
             if (fetchedRole) {
+              sessionStorage.setItem("ifphub_user_role_uid", uid);
               sessionStorage.setItem("ifphub_user_role", fetchedRole);
               role = fetchedRole;
             }

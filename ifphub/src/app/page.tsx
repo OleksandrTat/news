@@ -66,8 +66,11 @@ export default function AuthPage() {
           sessionStorage.setItem("ifphub_user_email", mail);
         }
 
+        sessionStorage.setItem("ifphub_user_role_uid", String(uid));
         if (rol) {
           sessionStorage.setItem("ifphub_user_role", rol);
+        } else {
+          sessionStorage.removeItem("ifphub_user_role");
         }
 
         sessionStorage.setItem("uid", uid);

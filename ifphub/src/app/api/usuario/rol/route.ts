@@ -31,7 +31,7 @@ export async function GET(req: Request) {
     .eq("id_usuario", uid)
     .maybeSingle();
 
-  if (error) {
+  if (error || !perfil?.rol) {
     const { data: rpcData, error: rpcError } = await supabase.rpc(
       "fn_get_rol_usuario",
       { p_id_usuario: uid }
@@ -45,10 +45,10 @@ export async function GET(req: Request) {
       );
     }
 
-    const rol = String(rpcData ?? "").toLowerCase();
+    const rol = String(rpcData ?? "").trim().toLowerCase();
     return NextResponse.json({ rol });
   }
 
-  const rol = String(perfil?.rol ?? "").toLowerCase();
+  const rol = String(perfil?.rol ?? "").trim().toLowerCase();
   return NextResponse.json({ rol });
 }
