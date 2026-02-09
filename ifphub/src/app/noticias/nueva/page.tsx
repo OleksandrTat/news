@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import AuthGuard from "@/app/frontend/components/AuthGuard";
+import Header from "@/app/frontend/components/header";
 import { NEWS_CREATOR_ROLES } from "@/app/utils/roles";
 
 type CreatedNoticia = {
@@ -70,8 +71,10 @@ export default function NuevaNoticiaPage() {
 
   return (
     <AuthGuard allowedRoles={NEWS_CREATOR_ROLES}>
-      <main className="px-4 py-8 bg-gradient-to-b from-[#fafbfc] to-white min-h-screen">
-      <div className="max-w-3xl mx-auto">
+      <div>
+        <Header />
+        <main className="px-4 py-8 bg-gradient-to-b from-[#fafbfc] to-white min-h-screen">
+          <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-2 text-xs text-muted">
           <Link href="/noticias" className="hover:text-accent transition-colors">
             Noticias
@@ -181,8 +184,9 @@ export default function NuevaNoticiaPage() {
             </Link>
           </div>
         </form>
+          </div>
+        </main>
       </div>
-      </main>
     </AuthGuard>
   );
 }

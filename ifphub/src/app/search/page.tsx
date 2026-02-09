@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Header from "../frontend/components/header";
 import Sidebar from "../frontend/components/sidebar-noticias";
 
@@ -34,6 +35,7 @@ const isSameDay = (a: Date, b: Date) =>
   a.getDate() === b.getDate();
 
 export default function SearchPage() {
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState(QUERY_DEFAULT);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -48,6 +50,13 @@ export default function SearchPage() {
     const sig = sessionStorage.getItem("sig") ?? undefined;
     setSession({ uid, sig });
   }, []);
+
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q !== null) {
+      setQuery(q);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     let active = true;

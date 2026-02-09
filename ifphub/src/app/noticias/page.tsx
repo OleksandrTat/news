@@ -3,7 +3,7 @@
 import Hero from '@/app/frontend/components/hero'
 import Sidebar from '@/app/frontend/components/sidebar-noticias'
 import Link from "next/link"
-import CreateNewsButton from "@/app/frontend/components/create-news-button"
+import Header from "@/app/frontend/components/header"
 
 import {
   Breadcrumb,
@@ -49,9 +49,10 @@ export default async function Page(props: { searchParams: Promise<any> }) {
   return (
     <AuthGuard>
       <div>
-        {/* HEADER CON ANIMACIÓN */}
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b border-[#eef3f6] bg-white/80 backdrop-blur-sm sticky top-0 z-10 transition-all">
-          <div className="flex items-center gap-2 px-4 w-full">
+        <Header />
+
+        <section className="px-4 pt-6">
+          <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
@@ -59,26 +60,11 @@ export default async function Page(props: { searchParams: Promise<any> }) {
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
-
-            {/* Indicador de scroll */}
-            <div className="ml-auto flex items-center gap-3">
-              <Link
-                href="/search"
-                className="inline-flex items-center px-3 py-1.5 rounded-md border border-[#dde5ea] bg-white text-xs font-semibold hover:border-accent/40 hover:text-accent transition"
-              >
-                Buscar
-              </Link>
-              <CreateNewsButton
-                className="inline-flex items-center px-3 py-1.5 rounded-md bg-accent text-white text-xs font-semibold hover:opacity-90 transition"
-                uid={uid}
-                sig={sig}
-              />
-              <div className="text-xs text-muted hidden sm:block">
-                {noticiasArray.length} artículos disponibles
-              </div>
+            <div className="text-xs text-muted">
+              {noticiasArray.length} artículos disponibles
             </div>
           </div>
-        </header>
+        </section>
 
         {/* CONTENIDO */}
         <main className="px-4 py-6 bg-gradient-to-b from-[#fafbfc] to-white min-h-screen">

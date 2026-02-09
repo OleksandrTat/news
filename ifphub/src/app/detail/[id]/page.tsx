@@ -1,4 +1,5 @@
 import Sidebar from "@/app/frontend/components/sidebar-noticias";
+import Header from "@/app/frontend/components/header";
 import { createClient } from "@/app/backend/utils/supabase/client";
 import { Baskervville } from "next/font/google";
 
@@ -124,9 +125,9 @@ export default async function DetailPage(props: {
 
   return (
     <div>
-      {/* HEADER MEJORADO */}
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b border-[#eef3f6] bg-white/80 backdrop-blur-sm sticky top-0 z-10 transition-all">
-        <div className="flex items-center gap-2 px-4 w-full">
+      <Header />
+      <section className="px-4 pt-6">
+        <div className="max-w-6xl mx-auto">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
@@ -147,7 +148,7 @@ export default async function DetailPage(props: {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-      </header>
+      </section>
 
       {/* CONTENIDO */}
       <main className="bg-gradient-to-b from-[#fafbfc] to-white min-h-screen px-4 py-8">
