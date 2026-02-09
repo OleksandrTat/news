@@ -55,6 +55,7 @@ export default function AuthPage() {
           result.usuario.email ??
           email ??
           "";
+        const rol = (result.usuario.rol ?? "").trim().toLowerCase();
         const fullName = [nombre, apellido].filter(Boolean).join(" ").trim();
 
         if (fullName) {
@@ -63,6 +64,10 @@ export default function AuthPage() {
 
         if (mail) {
           sessionStorage.setItem("ifphub_user_email", mail);
+        }
+
+        if (rol) {
+          sessionStorage.setItem("ifphub_user_role", rol);
         }
 
         sessionStorage.setItem("uid", uid);

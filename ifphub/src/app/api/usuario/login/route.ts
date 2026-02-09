@@ -35,11 +35,12 @@ export async function POST(req: Request) {
     nombre: user.nombre ?? "",
     apellido: user.apellido ?? "",
     mail: user.mail ?? user.email ?? "",
+    rol: user.rol ?? "",
   };
 
   const { data: perfil, error: perfilError } = await supabase
     .from("usuario")
-    .select("nombre, apellido, mail")
+    .select("nombre, apellido, mail, rol")
     .eq("id_usuario", uid)
     .maybeSingle();
 
@@ -48,6 +49,7 @@ export async function POST(req: Request) {
       nombre: perfil.nombre ?? profile.nombre,
       apellido: perfil.apellido ?? profile.apellido,
       mail: perfil.mail ?? profile.mail,
+      rol: perfil.rol ?? profile.rol,
     };
   }
 
@@ -58,7 +60,8 @@ export async function POST(req: Request) {
       sig,
       nombre: profile.nombre,
       apellido: profile.apellido,
-      mail: profile.mail
+      mail: profile.mail,
+      rol: (profile.rol ?? "").trim().toLowerCase()
     }
   });
 }

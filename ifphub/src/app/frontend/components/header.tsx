@@ -1,4 +1,5 @@
 import Link from "next/link"
+import CreateNewsButton from "@/app/frontend/components/create-news-button"
 
 export default function Header() {
   return (
@@ -23,6 +24,9 @@ export default function Header() {
             readOnly
           />
         </Link>
+        <CreateNewsButton
+          className="px-3 py-2 rounded-md text-xs font-semibold bg-accent text-white hover:opacity-90 transition"
+        />
       </div>
     </header>
   )

@@ -3,6 +3,7 @@
 import Hero from '@/app/frontend/components/hero'
 import Sidebar from '@/app/frontend/components/sidebar-noticias'
 import Link from "next/link"
+import CreateNewsButton from "@/app/frontend/components/create-news-button"
 
 import {
   Breadcrumb,
@@ -60,8 +61,15 @@ export default async function Page(props: { searchParams: Promise<any> }) {
             </Breadcrumb>
 
             {/* Indicador de scroll */}
-            <div className="ml-auto text-xs text-muted hidden sm:block">
-              {noticiasArray.length} artículos disponibles
+            <div className="ml-auto flex items-center gap-3">
+              <CreateNewsButton
+                className="inline-flex items-center px-3 py-1.5 rounded-md bg-accent text-white text-xs font-semibold hover:opacity-90 transition"
+                uid={uid}
+                sig={sig}
+              />
+              <div className="text-xs text-muted hidden sm:block">
+                {noticiasArray.length} artículos disponibles
+              </div>
             </div>
           </div>
         </header>
