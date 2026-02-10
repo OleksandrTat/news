@@ -2,6 +2,7 @@ import Sidebar from "@/app/frontend/components/sidebar-noticias";
 import Header from "@/app/frontend/components/header";
 import { createClient } from "@/app/backend/utils/supabase/client";
 import { Baskervville } from "next/font/google";
+import { estimateReadingTime } from "@/app/utils/readingTime";
 
 import {
   Breadcrumb,
@@ -94,6 +95,9 @@ export default async function DetailPage(props: {
       : "/imagenes/default_image.webp";
 
   const descripcion = noticia.descripcion ?? "";
+  const readingMinutes = estimateReadingTime(
+    `${noticia.titulo ?? ""} ${descripcion}`.trim()
+  );
   const descriptionParts = descripcion.split(/\n\s*\n/);
 
   let firstParagraph = descriptionParts[0] ?? "";
@@ -189,11 +193,14 @@ export default async function DetailPage(props: {
                   </time>
                 </div>
                 
-                <div className="flex items-center gap-2 text-sm text-muted">
+                <div
+                  className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent"
+                  title="Tiempo de lectura estimado"
+                >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span>Lectura de 3 min</span>
+                  <span>Lectura de {readingMinutes} min</span>
                 </div>
               </div>
 

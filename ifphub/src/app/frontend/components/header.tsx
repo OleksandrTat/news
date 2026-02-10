@@ -20,6 +20,16 @@ export default function Header() {
     router.push(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
   };
 
+  const handleLogout = () => {
+    sessionStorage.removeItem("uid");
+    sessionStorage.removeItem("sig");
+    sessionStorage.removeItem("ifphub_user_name");
+    sessionStorage.removeItem("ifphub_user_email");
+    sessionStorage.removeItem("ifphub_user_role");
+    sessionStorage.removeItem("ifphub_user_role_uid");
+    router.replace("/");
+  };
+
   return (
     <header className="sticky top-0 z-30 border-b border-[#e6edf2] bg-white/80 backdrop-blur-md">
       <div className="max-w-6xl mx-auto flex items-center gap-4 px-4 py-3">
@@ -65,6 +75,13 @@ export default function Header() {
             Buscar
           </button>
           <CreateNewsButton className="px-3 py-2 rounded-md text-xs font-semibold bg-accent text-white hover:opacity-90 transition" />
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="px-3 py-2 rounded-md text-xs font-semibold border border-[#f0d6d6] bg-white text-[#b42318] hover:border-[#f5b5b5] hover:text-[#8c1d18] transition"
+          >
+            Cerrar sesión
+          </button>
         </div>
       </div>
     </header>

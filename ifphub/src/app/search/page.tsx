@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Header from "../frontend/components/header";
 import Sidebar from "../frontend/components/sidebar-noticias";
+import { estimateReadingTime } from "../utils/readingTime";
 
 type Noticia = {
   id_noticia: number;
@@ -408,6 +409,9 @@ export default function SearchPage() {
                   const image = r.imagen && r.imagen.trim() !== ""
                     ? r.imagen
                     : getPicsum(r.id_noticia, 320, 200);
+                  const readingMinutes = estimateReadingTime(
+                    `${r.titulo ?? ""} ${r.descripcion ?? ""}`.trim()
+                  );
 
                   return (
                     <article
@@ -425,7 +429,9 @@ export default function SearchPage() {
                           </span>
                         )}
                         <span className="text-muted">•</span>
-                        <span className="text-muted">Lectura 3 min</span>
+                        <span className="text-muted" title="Tiempo de lectura estimado">
+                          Lectura {readingMinutes} min
+                        </span>
                         <span className="ml-auto rounded-full border border-[#e6edf2] px-3 py-1 text-[11px] font-semibold text-primary">
                           Campus
                         </span>
