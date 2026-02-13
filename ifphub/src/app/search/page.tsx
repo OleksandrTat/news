@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -27,13 +27,30 @@ const quickTags = [
   "Empleabilidad",
 ];
 
-const getPicsum = (seed: string | number, w = 320, h = 200) =>
-  `https://picsum.photos/seed/${encodeURIComponent(String(seed))}/${w}/${h}`;
+const getPicsum = (seed: string | number, width = 320, height = 200) =>
+  `https://picsum.photos/seed/${encodeURIComponent(String(seed))}/${width}/${height}`;
+
+const getTimestamp = (value?: string | null) => {
+  if (!value) return 0;
+  const parsed = new Date(value);
+  const timestamp = parsed.getTime();
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+};
 
 const isSameDay = (a: Date, b: Date) =>
   a.getFullYear() === b.getFullYear() &&
   a.getMonth() === b.getMonth() &&
   a.getDate() === b.getDate();
+
+const formatDate = (value?: string | null) => {
+  const timestamp = getTimestamp(value);
+  if (!timestamp) return "Fecha pendiente";
+  return new Date(timestamp).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
 
 export default function SearchPage() {
   const [query, setQuery] = useState(QUERY_DEFAULT);
@@ -47,9 +64,7 @@ export default function SearchPage() {
   useEffect(() => {
     const syncFromUrl = () => {
       const q = new URLSearchParams(window.location.search).get("q");
-      if (q !== null) {
-        setQuery(q);
-      }
+      if (q !== null) setQuery(q);
     };
 
     syncFromUrl();
@@ -114,9 +129,9 @@ export default function SearchPage() {
 
         let score = 0;
         if (tokens.length > 0) {
-          for (const t of tokens) {
-            if (title.includes(t)) score += 2;
-            if (desc.includes(t)) score += 1;
+          for (const token of tokens) {
+            if (title.includes(token)) score += 2;
+            if (desc.includes(token)) score += 1;
           }
         }
 
@@ -172,10 +187,7 @@ export default function SearchPage() {
     ];
   }, [filtered]);
 
-  const todayLabel = useMemo(
-    () => new Date().toLocaleDateString("es-ES"),
-    []
-  );
+  const todayLabel = useMemo(() => new Date().toLocaleDateString("es-ES"), []);
 
   const handleReset = () => {
     setQuery(QUERY_DEFAULT);
@@ -186,26 +198,26 @@ export default function SearchPage() {
 
   return (
     <AuthGuard>
-      <main className="min-h-screen bg-gradient-to-b from-[#f7f9fb] via-white to-[#f2f6f8]">
+      <main className="min-h-screen">
         <Header />
 
-        <section className="max-w-6xl mx-auto px-4 pt-10">
-          <div className="relative overflow-hidden rounded-[28px] border border-[#e4edf2] bg-gradient-to-br from-white via-[#f7fbff] to-[#f2f6f8] p-8 lg:p-12 shadow-sm-custom">
-            <div className="absolute -top-24 -right-20 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_top,#f9d6df,transparent_60%)] opacity-70" />
-            <div className="absolute -bottom-28 -left-20 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_top,#dbe9f2,transparent_60%)] opacity-70" />
+        <section className="mx-auto max-w-6xl px-4 pt-8">
+          <div className="relative overflow-hidden rounded-[28px] border border-[#d8e5ee] bg-[linear-gradient(150deg,#ffffff,#f3f8fb)] p-7 md:p-9 shadow-sm-custom">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-[radial-gradient(circle_at_top,rgba(223,106,57,0.2),transparent_64%)]" />
+            <div className="pointer-events-none absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-[radial-gradient(circle_at_top,rgba(16,47,69,0.16),transparent_64%)]" />
 
-            <div className="relative grid gap-10 lg:grid-cols-[1.25fr_0.75fr]">
-              <div className="space-y-6 animate-rise">
-                <div className="inline-flex items-center gap-2 rounded-full bg-accent/10 text-accent px-3 py-1 text-xs font-semibold tracking-wide">
+            <div className="relative grid gap-8 lg:grid-cols-[1.25fr_0.75fr]">
+              <div className="space-y-5 animate-rise">
+                <div className="inline-flex items-center gap-2 rounded-full bg-accent/12 px-3 py-1 text-xs font-semibold tracking-[0.14em] text-accent uppercase">
                   Busqueda inteligente
                 </div>
+
                 <div className="space-y-2">
-                  <h1 className="text-3xl md:text-4xl font-libre font-semibold text-primary">
-                    Encuentra noticias, eventos y recursos del campus
+                  <h1 className="font-display text-4xl leading-tight text-primary md:text-5xl">
+                    Encuentra noticias por tema, fecha y relevancia
                   </h1>
-                  <p className="text-muted text-sm md:text-base max-w-xl">
-                    Filtra por fechas, categorias y relevancia. Descubre contenido
-                    recomendado segun tus intereses y el contexto del campus.
+                  <p className="max-w-2xl text-sm text-muted md:text-base">
+                    Filtra contenido del campus, revisa resultados recientes y navega directo al detalle de cada publicacion.
                   </p>
                 </div>
 
@@ -220,13 +232,13 @@ export default function SearchPage() {
                       placeholder="Buscar por tema, evento o palabra clave"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
-                      className="w-full rounded-2xl border border-[#dde5ea] bg-white/90 px-4 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                      className="w-full rounded-xl border border-[#d7e3eb] bg-white px-4 py-3 text-sm text-primary shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                     />
-                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs text-muted">
-                      Enter
+                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-semibold tracking-wide text-muted">
+                      ENTER
                     </span>
                   </div>
-                  <button className="rounded-2xl bg-accent px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30">
+                  <button className="rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30">
                     Buscar
                   </button>
                 </form>
@@ -238,58 +250,57 @@ export default function SearchPage() {
                       key={tag}
                       type="button"
                       onClick={() => setQuery(tag)}
-                      className="rounded-full border border-[#e6edf2] bg-white/80 px-3 py-1 text-[11px] font-semibold text-primary transition hover:border-accent/40 hover:text-accent"
+                      className="rounded-full border border-[#d8e4ec] bg-white px-3 py-1 font-semibold text-primary transition hover:border-accent/40 hover:text-accent"
                     >
                       {tag}
                     </button>
                   ))}
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="grid gap-3 sm:grid-cols-3">
                   {stats.map((item) => (
                     <div
                       key={item.label}
-                      className="rounded-xl border border-[#e7eef3] bg-white/80 px-4 py-3 text-sm shadow-sm"
+                      className="rounded-xl border border-[#dce7ef] bg-white/90 px-4 py-3 text-sm shadow-sm"
                     >
                       <div className="text-xs text-muted">{item.label}</div>
-                      <div className="text-lg font-semibold text-primary">
-                        {item.value}
-                      </div>
+                      <div className="text-lg font-semibold text-primary">{item.value}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="space-y-4 animate-rise">
-                <div className="rounded-2xl border border-[#e7eef3] bg-white/90 p-5 shadow-sm">
-                  <h3 className="text-sm font-semibold text-primary mb-4">
-                    Filtros rapidos
-                  </h3>
+                <div className="rounded-2xl border border-[#dce7ef] bg-white/92 p-5 shadow-sm">
+                  <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-primary">
+                    Filtros
+                  </h2>
+
                   <div className="grid gap-3">
-                    <label className="text-xs text-muted">
+                    <label className="text-xs font-semibold text-muted">
                       Desde
                       <input
                         type="date"
                         value={fromDate}
                         onChange={(e) => setFromDate(e.target.value)}
-                        className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                        className="mt-1.5 w-full rounded-lg border border-[#d7e3eb] bg-white px-3 py-2 text-sm text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                       />
                     </label>
-                    <label className="text-xs text-muted">
+                    <label className="text-xs font-semibold text-muted">
                       Hasta
                       <input
                         type="date"
                         value={toDate}
                         onChange={(e) => setToDate(e.target.value)}
-                        className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                        className="mt-1.5 w-full rounded-lg border border-[#d7e3eb] bg-white px-3 py-2 text-sm text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                       />
                     </label>
-                    <label className="text-xs text-muted">
+                    <label className="text-xs font-semibold text-muted">
                       Ordenar por
                       <select
                         value={sort}
                         onChange={(e) => setSort(e.target.value as SortKey)}
-                        className="mt-1 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                        className="mt-1.5 w-full rounded-lg border border-[#d7e3eb] bg-white px-3 py-2 text-sm text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                       >
                         <option value="relevance">Relevancia</option>
                         <option value="recent">Mas recientes</option>
@@ -297,32 +308,30 @@ export default function SearchPage() {
                       </select>
                     </label>
                   </div>
+
                   <div className="mt-4 flex gap-2">
                     <button
                       type="button"
-                      disabled
-                      className="flex-1 rounded-xl bg-accent px-3 py-2 text-xs font-semibold text-white/90 shadow-sm cursor-not-allowed"
+                      className="flex-1 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white"
                     >
-                      Filtros en tiempo real
+                      Filtros activos
                     </button>
                     <button
                       type="button"
                       onClick={handleReset}
-                      className="flex-1 rounded-xl border border-[#e6edf2] px-3 py-2 text-xs font-semibold text-primary transition hover:border-accent/40 hover:text-accent"
+                      className="flex-1 rounded-lg border border-[#d8e4ec] px-3 py-2 text-xs font-semibold text-primary transition hover:border-accent/40 hover:text-accent"
                     >
                       Limpiar
                     </button>
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-[#e7eef3] bg-white/90 p-5 shadow-sm">
-                  <h3 className="text-sm font-semibold text-primary mb-3">
-                    Consejos de busqueda
-                  </h3>
-                  <ul className="text-xs text-muted space-y-2">
-                    <li>Usa comillas para busquedas exactas.</li>
-                    <li>Combina temas: "IA" + "eventos".</li>
-                    <li>Filtra por fechas para encontrar lo mas reciente.</li>
+                <div className="rounded-2xl border border-[#dce7ef] bg-white/92 p-5 shadow-sm">
+                  <h3 className="mb-3 text-sm font-semibold text-primary">Consejos de busqueda</h3>
+                  <ul className="space-y-2 text-xs text-muted">
+                    <li>Prueba palabras clave cortas para ampliar resultados.</li>
+                    <li>Combina filtros de fecha para contexto reciente.</li>
+                    <li>Usa la ordenacion por relevancia para consultas largas.</li>
                   </ul>
                 </div>
               </div>
@@ -330,52 +339,34 @@ export default function SearchPage() {
           </div>
         </section>
 
-        <section className="max-w-6xl mx-auto px-4 py-10">
+        <section className="mx-auto max-w-6xl px-4 py-10">
           <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
             <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-semibold text-primary">
-                    Resultados para: <span className="text-accent">"{query.trim() || "Todo"}"</span>
+                  <h2 className="text-2xl font-semibold text-primary md:text-3xl">
+                    Resultados para <span className="text-accent">"{query.trim() || "todo"}"</span>
                   </h2>
-                  <p className="text-sm text-muted">
+                  <p className="mt-1 text-sm text-muted">
                     {loading ? "Buscando noticias..." : `Mostrando ${filtered.length} resultados.`}
                   </p>
                 </div>
+
                 <div className="flex items-center gap-2 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => setSort("relevance")}
-                    className={`rounded-full border px-3 py-1 font-semibold transition ${
-                      sort === "relevance"
-                        ? "border-accent/40 text-accent"
-                        : "border-[#e6edf2] bg-white text-primary hover:border-accent/40 hover:text-accent"
-                    }`}
-                  >
-                    Relevancia
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSort("recent")}
-                    className={`rounded-full border px-3 py-1 font-semibold transition ${
-                      sort === "recent"
-                        ? "border-accent/40 text-accent"
-                        : "border-[#e6edf2] bg-white text-primary hover:border-accent/40 hover:text-accent"
-                    }`}
-                  >
-                    Recientes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSort("popular")}
-                    className={`rounded-full border px-3 py-1 font-semibold transition ${
-                      sort === "popular"
-                        ? "border-accent/40 text-accent"
-                        : "border-[#e6edf2] bg-white text-primary hover:border-accent/40 hover:text-accent"
-                    }`}
-                  >
-                    Populares
-                  </button>
+                  {(["relevance", "recent", "popular"] as const).map((key) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setSort(key)}
+                      className={`rounded-full border px-3 py-1 font-semibold transition ${
+                        sort === key
+                          ? "border-accent/45 bg-accent/10 text-accent"
+                          : "border-[#d8e4ec] bg-white text-primary hover:border-accent/40 hover:text-accent"
+                      }`}
+                    >
+                      {key === "relevance" ? "Relevancia" : key === "recent" ? "Recientes" : "Populares"}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -384,86 +375,80 @@ export default function SearchPage() {
                   {[0, 1, 2].map((item) => (
                     <div
                       key={item}
-                      className="rounded-2xl border border-[#e7eef3] bg-white/95 p-5 shadow-sm animate-pulse"
+                      className="rounded-2xl border border-[#dce7ef] bg-white p-5 shadow-sm animate-pulse"
                     >
-                      <div className="h-4 w-24 rounded bg-[#eef3f6]" />
-                      <div className="mt-4 h-5 w-3/4 rounded bg-[#eef3f6]" />
-                      <div className="mt-2 h-3 w-full rounded bg-[#eef3f6]" />
+                      <div className="h-4 w-24 rounded bg-[#eaf0f5]" />
+                      <div className="mt-4 h-5 w-3/4 rounded bg-[#eaf0f5]" />
+                      <div className="mt-2 h-3 w-full rounded bg-[#eaf0f5]" />
                     </div>
                   ))}
                 </div>
               )}
 
               {!loading && errorMsg && (
-                <div className="rounded-2xl border border-red-100 bg-red-50 p-5 text-sm text-red-600">
+                <div className="rounded-2xl border border-[#f0cfc4] bg-[#fff3ef] p-5 text-sm text-[#a74822]">
                   {errorMsg}
                 </div>
               )}
 
               {!loading && !errorMsg && filtered.length === 0 && (
-                <div className="rounded-2xl border border-[#e7eef3] bg-white/90 p-6 text-sm text-muted">
+                <div className="rounded-2xl border border-[#dce7ef] bg-white/90 p-6 text-sm text-muted">
                   No se encontraron resultados para la busqueda actual.
                 </div>
               )}
 
               {!loading && !errorMsg && filtered.length > 0 && (
                 <div className="grid gap-4">
-                  {filtered.map((r, idx) => {
-                    const image = r.imagen && r.imagen.trim() !== ""
-                      ? r.imagen
-                      : getPicsum(r.id_noticia, 320, 200);
+                  {filtered.map((result, idx) => {
+                    const image = result.imagen && result.imagen.trim() !== ""
+                      ? result.imagen
+                      : getPicsum(result.id_noticia, 320, 200);
                     const readingMinutes = estimateReadingTime(
-                      `${r.titulo ?? ""} ${r.descripcion ?? ""}`.trim()
+                      `${result.titulo ?? ""} ${result.descripcion ?? ""}`.trim()
                     );
 
                     return (
                       <article
-                        key={r.id_noticia}
-                        className="group grid gap-4 rounded-2xl border border-[#e7eef3] bg-white/95 p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg motion-reduce:transform-none animate-rise"
-                        style={{ animationDelay: `${idx * 60}ms` }}
+                        key={result.id_noticia}
+                        className="group grid gap-4 rounded-2xl border border-[#dce7ef] bg-white/95 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md motion-reduce:transform-none animate-rise"
+                        style={{ animationDelay: `${idx * 55}ms` }}
                       >
-                        <div className="flex flex-wrap items-center gap-3 text-xs">
+                        <div className="flex flex-wrap items-center gap-3 text-xs text-muted">
                           <span className="rounded-full bg-accent/10 px-3 py-1 font-semibold text-accent">
                             Noticias
                           </span>
-                          {r.fecha_hora && (
-                            <span className="text-muted">
-                              {new Date(r.fecha_hora).toLocaleDateString("es-ES")}
-                            </span>
-                          )}
-                          <span className="text-muted">-</span>
-                          <span className="text-muted" title="Tiempo de lectura estimado">
-                            Lectura {readingMinutes} min
-                          </span>
-                          <span className="ml-auto rounded-full border border-[#e6edf2] px-3 py-1 text-[11px] font-semibold text-primary">
+                          <span>{formatDate(result.fecha_hora)}</span>
+                          <span>-</span>
+                          <span title="Tiempo de lectura estimado">Lectura {readingMinutes} min</span>
+                          <span className="ml-auto rounded-full border border-[#d8e4ec] px-3 py-1 text-[11px] font-semibold text-primary">
                             Campus
                           </span>
                         </div>
 
-                        <div className="grid gap-3 md:grid-cols-[160px_1fr]">
+                        <div className="grid gap-3 md:grid-cols-[170px_1fr]">
                           <div
-                            className="h-28 w-full rounded-xl bg-cover bg-center"
+                            className="h-[7.5rem] w-full rounded-xl bg-cover bg-center"
                             style={{ backgroundImage: `url(${image})` }}
                           />
                           <div className="space-y-2">
-                            <h3 className="text-lg font-semibold text-primary group-hover:text-accent transition-colors">
-                              {r.titulo ?? "Sin titulo"}
+                            <h3 className="text-lg font-semibold text-primary transition-colors group-hover:text-accent">
+                              {result.titulo ?? "Sin titulo"}
                             </h3>
-                            <p className="text-sm text-gray-700 line-clamp-2">
-                              {r.descripcion ?? "Resumen no disponible."}
+                            <p className="line-clamp-2 text-sm text-muted">
+                              {result.descripcion ?? "Resumen no disponible."}
                             </p>
-                            <div className="flex flex-wrap items-center gap-3 text-xs text-muted">
+                            <div className="flex flex-wrap items-center gap-4 text-xs text-muted">
                               <Link
-                                href={`/detail/${r.id_noticia}`}
+                                href={`/detail/${result.id_noticia}`}
                                 className="inline-flex items-center gap-2 font-semibold text-accent hover:text-accent/80"
                               >
                                 Ver detalle
                                 <span aria-hidden="true">-&gt;</span>
                               </Link>
-                              <button type="button" className="hover:text-accent transition-colors">
+                              <button type="button" className="transition hover:text-accent">
                                 Compartir
                               </button>
-                              <button type="button" className="hover:text-accent transition-colors">
+                              <button type="button" className="transition hover:text-accent">
                                 Guardar
                               </button>
                             </div>
@@ -476,11 +461,9 @@ export default function SearchPage() {
               )}
             </div>
 
-            <aside className="lg:sticky lg:top-20 lg:self-start space-y-6">
-              <div className="rounded-2xl border border-[#e7eef3] bg-white/90 p-5 shadow-sm">
-                <h3 className="text-sm font-semibold text-primary mb-3">
-                  Panel rapido
-                </h3>
+            <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+              <div className="rounded-2xl border border-[#dce7ef] bg-white/92 p-5 shadow-sm">
+                <h3 className="mb-3 text-sm font-semibold text-primary">Panel rapido</h3>
                 <div className="grid gap-3 text-xs text-muted">
                   <div className="flex items-center justify-between">
                     <span>Ultima actualizacion</span>
@@ -488,15 +471,11 @@ export default function SearchPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Resultados visibles</span>
-                    <span className="font-semibold text-primary">
-                      {filtered.length}
-                    </span>
+                    <span className="font-semibold text-primary">{filtered.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Query activa</span>
-                    <span className="font-semibold text-primary">
-                      {query.trim() || "Todas"}
-                    </span>
+                    <span className="font-semibold text-primary">{query.trim() || "Todas"}</span>
                   </div>
                 </div>
               </div>
@@ -505,8 +484,8 @@ export default function SearchPage() {
           </div>
         </section>
 
-        <footer className="mt-8 text-center text-sm text-muted border-t border-[#e7eef3] py-6">
-          (c) 2026 Portal Noticias - Diseno Pro++
+        <footer className="mt-8 border-t border-[#dce7ef] py-6 text-center text-sm text-muted">
+          (c) 2026 Portal Noticias - IFPHub
         </footer>
       </main>
     </AuthGuard>

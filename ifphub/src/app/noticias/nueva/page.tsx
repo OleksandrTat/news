@@ -30,7 +30,7 @@ export default function NuevaNoticiaPage() {
     const storedSig = sessionStorage.getItem("sig");
 
     if (!storedUid || !storedSig) {
-      setErrorMsg("Sesión inválida. Inicia sesión de nuevo.");
+      setErrorMsg("Sesion invalida. Inicia sesion de nuevo.");
       return;
     }
 
@@ -54,7 +54,7 @@ export default function NuevaNoticiaPage() {
       const result = await res.json();
 
       if (!res.ok) {
-        setErrorMsg(result?.error ?? "No se pudo crear la noticia");
+        setErrorMsg(result?.error ?? "No se pudo crear la noticia.");
       } else {
         setCreated(result?.data ?? null);
         setTitulo("");
@@ -63,7 +63,7 @@ export default function NuevaNoticiaPage() {
       }
     } catch (error) {
       console.error(error);
-      setErrorMsg("Error de red al crear la noticia");
+      setErrorMsg("Error de red al crear la noticia.");
     } finally {
       setLoading(false);
     }
@@ -73,117 +73,116 @@ export default function NuevaNoticiaPage() {
     <AuthGuard allowedRoles={NEWS_CREATOR_ROLES}>
       <div>
         <Header />
-        <main className="px-4 py-8 bg-gradient-to-b from-[#fafbfc] to-white min-h-screen">
-          <div className="max-w-3xl mx-auto">
-        <div className="flex items-center gap-2 text-xs text-muted">
-          <Link href="/noticias" className="hover:text-accent transition-colors">
-            Noticias
-          </Link>
-          <span>•</span>
-          <span>Crear noticia</span>
-        </div>
 
-        <header className="mt-2 mb-6">
-          <h1 className="text-3xl font-semibold">Crear noticia</h1>
-          <p className="text-muted mt-1">
-            Publica una noticia del campus. El acceso está restringido.
-          </p>
-        </header>
-
-        <form
-          className="bg-card rounded-[14px] p-6 md:p-8 shadow-sm border border-[#eef3f6] space-y-5"
-          onSubmit={handleSubmit}
-        >
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Título
-            </label>
-            <input
-              type="text"
-              value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
-              required
-              maxLength={120}
-              placeholder="Ej: Jornada de innovación en el campus"
-              className="w-full rounded-xl border border-gray-300 px-4 py-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
-            />
-            <p className="text-xs text-muted mt-1">Máximo 120 caracteres.</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Descripción
-            </label>
-            <textarea
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
-              required
-              rows={6}
-              placeholder="Escribe el contenido principal de la noticia..."
-              className="w-full rounded-xl border border-gray-300 px-4 py-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
-            />
-            <p className="text-xs text-muted mt-1">
-              Puedes incluir varios párrafos separados por líneas en blanco.
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Imagen (opcional)
-            </label>
-            <input
-              type="url"
-              value={imagen}
-              onChange={(e) => setImagen(e.target.value)}
-              placeholder="https://..."
-              className="w-full rounded-xl border border-gray-300 px-4 py-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
-            />
-            {imagen.trim().length > 0 && (
-              <div className="mt-3 rounded-lg overflow-hidden border border-[#eef3f6]">
-                <img
-                  src={imagen}
-                  alt="Previsualización"
-                  className="w-full h-48 object-cover"
-                />
-              </div>
-            )}
-          </div>
-
-          {errorMsg && (
-            <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg p-3">
-              {errorMsg}
-            </div>
-          )}
-
-          {created?.id_noticia && (
-            <div className="text-sm text-[#0E4A54] bg-[#f6fbfd] border border-[#e4f1f6] rounded-lg p-3 flex flex-wrap items-center gap-3">
-              <span>Noticia creada correctamente.</span>
-              <Link
-                href={`/detail/${created.id_noticia}`}
-                className="font-semibold text-accent hover:text-accent/80 transition-colors"
-              >
-                Ver noticia
+        <main className="min-h-screen px-4 py-8">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-4 flex items-center gap-2 text-xs text-muted">
+              <Link href="/noticias" className="hover:text-accent transition-colors">
+                Noticias
               </Link>
+              <span>-</span>
+              <span>Crear noticia</span>
             </div>
-          )}
 
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="submit"
-              disabled={!canSubmit}
-              className="px-5 py-2 rounded-xl bg-accent text-white font-semibold shadow-sm hover:opacity-90 transition disabled:opacity-60"
-            >
-              {loading ? "Publicando..." : "Publicar noticia"}
-            </button>
+            <section className="overflow-hidden rounded-[28px] border border-[#dce7ef] bg-white/95 shadow-sm">
+              <header className="border-b border-[#e4edf3] bg-[linear-gradient(150deg,#ffffff,#f4f9fc)] px-6 py-7 md:px-8">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent">
+                  Editor del portal
+                </p>
+                <h1 className="mt-2 font-display text-4xl text-primary">Crear noticia</h1>
+                <p className="mt-2 max-w-2xl text-sm text-muted">
+                  Publica novedades relevantes para la comunidad academica. Revisa ortografia y contexto antes de enviar.
+                </p>
+              </header>
 
-            <Link
-              href="/noticias"
-              className="px-5 py-2 rounded-xl border border-[#eef3f6] text-sm font-semibold hover:border-accent/40 hover:text-accent transition"
-            >
-              Volver
-            </Link>
-          </div>
-        </form>
+              <form className="space-y-5 px-6 py-7 md:px-8" onSubmit={handleSubmit}>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-primary">Titulo</label>
+                  <input
+                    type="text"
+                    value={titulo}
+                    onChange={(e) => setTitulo(e.target.value)}
+                    required
+                    maxLength={120}
+                    placeholder="Ej: Jornada de innovacion en el campus"
+                    className="w-full rounded-xl border border-[#d6e2ea] bg-white px-4 py-2.5 text-sm text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                  />
+                  <p className="mt-1 text-xs text-muted">Maximo 120 caracteres.</p>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-primary">Descripcion</label>
+                  <textarea
+                    value={descripcion}
+                    onChange={(e) => setDescripcion(e.target.value)}
+                    required
+                    rows={7}
+                    placeholder="Escribe el contenido principal de la noticia..."
+                    className="w-full rounded-xl border border-[#d6e2ea] bg-white px-4 py-2.5 text-sm text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                  />
+                  <p className="mt-1 text-xs text-muted">
+                    Puedes separar parrafos con una linea en blanco.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-primary">
+                    Imagen (opcional)
+                  </label>
+                  <input
+                    type="url"
+                    value={imagen}
+                    onChange={(e) => setImagen(e.target.value)}
+                    placeholder="https://..."
+                    className="w-full rounded-xl border border-[#d6e2ea] bg-white px-4 py-2.5 text-sm text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                  />
+                  {imagen.trim().length > 0 && (
+                    <div className="mt-3 overflow-hidden rounded-lg border border-[#dce7ef]">
+                      <img
+                        src={imagen}
+                        alt="Previsualizacion"
+                        className="h-52 w-full object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {errorMsg && (
+                  <div className="rounded-lg border border-[#f0cfc4] bg-[#fff3ef] p-3 text-sm text-[#a74822]">
+                    {errorMsg}
+                  </div>
+                )}
+
+                {created?.id_noticia && (
+                  <div className="flex flex-wrap items-center gap-3 rounded-lg border border-[#d8e4ec] bg-[#f5f9fc] p-3 text-sm text-primary">
+                    <span>Noticia creada correctamente.</span>
+                    <Link
+                      href={`/detail/${created.id_noticia}`}
+                      className="font-semibold text-accent hover:text-accent/80 transition-colors"
+                    >
+                      Ver noticia
+                    </Link>
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="submit"
+                    disabled={!canSubmit}
+                    className="rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {loading ? "Publicando..." : "Publicar noticia"}
+                  </button>
+
+                  <Link
+                    href="/noticias"
+                    className="rounded-xl border border-[#d8e4ec] px-5 py-2.5 text-sm font-semibold text-primary transition hover:border-accent/40 hover:text-accent"
+                  >
+                    Volver
+                  </Link>
+                </div>
+              </form>
+            </section>
           </div>
         </main>
       </div>

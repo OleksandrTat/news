@@ -72,7 +72,15 @@ export default function AuthGuard({
     };
   }, [router, allowedRoles]);
 
-  if (!checked) return null;
+  if (!checked) {
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="rounded-xl border border-[#dce7ef] bg-white px-5 py-4 text-sm text-muted shadow-sm">
+          Verificando sesion...
+        </div>
+      </div>
+    );
+  }
 
   return <>{children}</>;
 }
