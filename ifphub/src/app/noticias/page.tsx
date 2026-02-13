@@ -9,6 +9,7 @@ import {
   BreadcrumbPage,
 } from "@/app/frontend/components/ui/breadcrumb";
 import AuthGuard from "@/app/frontend/components/AuthGuard";
+import { createClient } from "@/app/backend/utils/supabase/client";
 
 type NoticiasPayload = {
   data?: unknown;
@@ -51,22 +52,21 @@ const normalizeNoticia = (input: RawNoticia): HeroNoticia => {
 };
 
 async function getNoticias(): Promise<HeroNoticia[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/noticias`, {
-    cache: "no-store",
-  });
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc("fn_get_noticia");
 
-  if (!res.ok) {
-    console.error("No se pudieron cargar las noticias");
+  if (error) {
+    console.error("No se pudieron cargar las noticias:", error);
     return [];
   }
 
-  const payload: unknown = await res.json();
+  const payload: unknown = data;
 
   const rawList: unknown[] = Array.isArray(payload)
     ? payload
     : isRecord(payload) && Array.isArray((payload as NoticiasPayload).data)
-      ? ((payload as NoticiasPayload).data as unknown[])
-      : [];
+    ? ((payload as NoticiasPayload).data as unknown[])
+    : [];
 
   return rawList
     .filter(isRecord)
