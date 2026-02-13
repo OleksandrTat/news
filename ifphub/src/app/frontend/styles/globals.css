@@ -16,13 +16,13 @@
 }
 
 :root {
-  --primary: #102f45;
-  --accent: #df6a39;
-  --soft: #e6eff5;
-  --muted: #5f6f7c;
-  --bg: #eef3f7;
+  --primary: #10283a;
+  --accent: #cb6325;
+  --soft: #e8eff4;
+  --muted: #5c6f7d;
+  --bg: #edf2f6;
   --card: #ffffff;
-  --surface: #f7fafc;
+  --surface: #f6fafd;
 }
 
 @layer base {
@@ -32,8 +32,8 @@
     --primary-foreground: #ffffff;
 
     --muted-foreground: var(--muted);
-    --border: #d9e4ec;
-    --ring: rgba(223, 106, 57, 0.28);
+    --border: #d3e0e8;
+    --ring: rgba(203, 99, 37, 0.3);
   }
 
   * {
@@ -47,14 +47,31 @@
 
   body {
     background:
-      radial-gradient(980px 680px at 0% -10%, rgba(223, 106, 57, 0.11), transparent 55%),
-      radial-gradient(920px 640px at 100% -8%, rgba(16, 47, 69, 0.12), transparent 55%),
+      radial-gradient(940px 700px at 0% -12%, rgba(203, 99, 37, 0.13), transparent 58%),
+      radial-gradient(920px 700px at 100% -10%, rgba(16, 40, 58, 0.14), transparent 56%),
+      linear-gradient(180deg, #ecf1f5 0%, #f6fafd 42%, #eef3f6 100%),
       var(--background);
     color: var(--foreground);
     font-family: var(--font-sans), sans-serif;
-    line-height: 1.5;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-display), serif;
+    line-height: 1.08;
+    letter-spacing: -0.018em;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.18;
+    letter-spacing: -0.012em;
   }
 
   a {
@@ -62,7 +79,7 @@
   }
 
   ::selection {
-    background: rgba(223, 106, 57, 0.2);
+    background: rgba(203, 99, 37, 0.2);
     color: var(--foreground);
   }
 }
@@ -76,11 +93,11 @@
 }
 
 .shadow-md-custom {
-  box-shadow: 0 22px 40px rgba(16, 47, 69, 0.09);
+  box-shadow: 0 24px 44px rgba(12, 35, 51, 0.1);
 }
 
 .shadow-sm-custom {
-  box-shadow: 0 10px 24px rgba(16, 47, 69, 0.06);
+  box-shadow: 0 12px 26px rgba(12, 35, 51, 0.07);
 }
 
 .bg-primary {

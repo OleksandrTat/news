@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { DM_Sans, Source_Serif_4 } from "next/font/google";
+import { Fraunces, Manrope } from "next/font/google";
 import "./frontend/styles/globals.css";
 
-const dmSans = DM_Sans({
+const manrope = Manrope({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 });
 
-const sourceSerif = Source_Serif_4({
+const fraunces = Fraunces({
   variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
@@ -32,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className={`${dmSans.variable} ${sourceSerif.variable} antialiased`}>
+      <body className={`${manrope.variable} ${fraunces.variable} antialiased`}>
         {children}
       </body>
     </html>

@@ -61,64 +61,64 @@ export default function Hero({ featured, totalNoticias }: HeroProps) {
   );
 
   return (
-    <section className="relative overflow-hidden rounded-[30px] border border-[#d8e5ee] bg-[linear-gradient(150deg,#ffffff,#f3f8fb)] p-5 md:p-7 shadow-md-custom">
-      <div className="pointer-events-none absolute -left-20 -top-20 h-56 w-56 rounded-full bg-[radial-gradient(circle_at_top,rgba(223,106,57,0.2),transparent_64%)]" />
-      <div className="pointer-events-none absolute -bottom-20 -right-16 h-56 w-56 rounded-full bg-[radial-gradient(circle_at_top,rgba(16,47,69,0.16),transparent_64%)]" />
+    <section className="relative overflow-hidden rounded-[30px] border border-[#d3e0e8] bg-[linear-gradient(150deg,#ffffff,#f2f8fb)] p-5 md:p-7 shadow-md-custom">
+      <div className="pointer-events-none absolute -left-20 -top-20 h-56 w-56 rounded-full bg-[radial-gradient(circle_at_top,rgba(203,99,37,0.22),transparent_64%)]" />
+      <div className="pointer-events-none absolute -bottom-20 -right-16 h-56 w-56 rounded-full bg-[radial-gradient(circle_at_top,rgba(16,40,58,0.18),transparent_64%)]" />
 
-      <div className="relative overflow-hidden rounded-2xl border border-[#deebf2] bg-white">
-        <div className="relative h-[320px] md:h-[430px]">
+      <div className="relative overflow-hidden rounded-2xl border border-[#dbe7ef] bg-white">
+        <div className="relative h-[340px] md:h-[460px]">
           <img
             src={featuredImage}
             alt={featuredTitle}
-            className="h-full w-full object-cover transition-transform duration-700 hover:scale-105 motion-reduce:transform-none"
+            className="h-full w-full object-cover transition-transform duration-700 hover:scale-[1.04] motion-reduce:transform-none"
             loading="lazy"
             decoding="async"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0c2233]/90 via-[#0c2233]/35 to-[#0c2233]/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a1d2c]/92 via-[#0a1d2c]/42 to-[#0a1d2c]/18" />
 
-          <div className="absolute left-5 top-5 inline-flex rounded-full bg-white/92 px-3 py-1 text-xs font-semibold text-primary">
+          <div className="absolute left-5 top-5 inline-flex rounded-full border border-white/35 bg-white/88 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.13em] text-primary">
             Portada de hoy
           </div>
 
           <div className="absolute inset-x-5 bottom-5 space-y-4 text-white">
-            <p className="text-xs uppercase tracking-[0.22em] text-white/80">{featuredDate}</p>
-            <h2 className="max-w-4xl font-display text-3xl leading-tight md:text-5xl">
+            <p className="text-[11px] uppercase tracking-[0.24em] text-white/78">{featuredDate}</p>
+            <h2 className="max-w-4xl text-3xl leading-[1.02] md:text-6xl">
               {featuredTitle}
             </h2>
-            <p className="max-w-3xl text-sm text-white/90 md:text-base">{featuredDescription}</p>
+            <p className="max-w-3xl text-sm text-white/88 md:text-base">{featuredDescription}</p>
 
             <div className="flex flex-wrap gap-2 pt-1">
               <Link
                 href={featuredLink}
-                className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-xs font-semibold text-primary transition hover:bg-white/90"
+                className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-xs font-semibold text-primary shadow-sm transition hover:bg-white/90"
               >
                 Leer destacada
                 <span aria-hidden="true">-&gt;</span>
               </Link>
               <Link
                 href="#ultimas"
-                className="inline-flex items-center rounded-lg border border-white/45 bg-white/12 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/20"
+                className="inline-flex items-center rounded-lg border border-white/45 bg-white/14 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/24"
               >
                 Ver ultimas
               </Link>
               <CreateNewsButton
-                className="inline-flex items-center rounded-lg border border-[#ffd3c2] bg-accent px-4 py-2 text-xs font-semibold text-white transition hover:opacity-90"
+                className="inline-flex items-center rounded-lg border border-[#e3a07c] bg-[linear-gradient(140deg,#cb6325,#bc5314)] px-4 py-2 text-xs font-semibold text-white transition hover:opacity-92"
                 label="Publicar noticia"
               />
             </div>
           </div>
         </div>
 
-        <div className="grid gap-2 border-t border-[#deebf2] bg-[linear-gradient(160deg,#ffffff,#f8fbfe)] p-4 sm:grid-cols-3">
-          <div className="rounded-lg bg-white px-3 py-2">
+        <div className="grid gap-2 border-t border-[#dbe7ef] bg-[linear-gradient(160deg,#ffffff,#f7fbfe)] p-4 sm:grid-cols-3">
+          <div className="rounded-lg border border-[#e6eef4] bg-white px-3 py-2">
             <p className="text-[11px] text-muted">Noticias activas</p>
             <p className="text-lg font-semibold text-primary">{totalNoticias}</p>
           </div>
-          <div className="rounded-lg bg-white px-3 py-2">
+          <div className="rounded-lg border border-[#e6eef4] bg-white px-3 py-2">
             <p className="text-[11px] text-muted">Lectura portada</p>
             <p className="text-lg font-semibold text-primary">{readMinutes} min</p>
           </div>
-          <div className="rounded-lg bg-white px-3 py-2">
+          <div className="rounded-lg border border-[#e6eef4] bg-white px-3 py-2">
             <p className="text-[11px] text-muted">Actualizada</p>
             <p className="text-sm font-semibold text-primary line-clamp-1">{featuredDate}</p>
           </div>

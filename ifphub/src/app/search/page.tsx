@@ -15,17 +15,52 @@ type Noticia = {
   imagen?: string | null;
 };
 
-type SortKey = "relevance" | "recent" | "popular";
+type ViewMode = "comfortable" | "compact";
 
 const QUERY_DEFAULT = "";
 
-const quickTags = [
-  "Innovacion",
-  "Robotica",
-  "Ciberseguridad",
-  "Big Data",
-  "Empleabilidad",
-];
+const stopWords = new Set([
+  "para",
+  "desde",
+  "hasta",
+  "sobre",
+  "entre",
+  "tras",
+  "ante",
+  "bajo",
+  "hacia",
+  "esta",
+  "este",
+  "estas",
+  "estos",
+  "del",
+  "las",
+  "los",
+  "que",
+  "una",
+  "unos",
+  "unas",
+  "como",
+  "con",
+  "sin",
+  "por",
+  "the",
+  "and",
+  "para",
+  "campus",
+  "portal",
+  "noticia",
+  "noticias",
+]);
+
+const normalizeText = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+const formatSuggestionLabel = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1);
 
 const getPicsum = (seed: string | number, width = 320, height = 200) =>
   `https://picsum.photos/seed/${encodeURIComponent(String(seed))}/${width}/${height}`;
@@ -56,7 +91,7 @@ export default function SearchPage() {
   const [query, setQuery] = useState(QUERY_DEFAULT);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [sort, setSort] = useState<SortKey>("relevance");
+  const [viewMode, setViewMode] = useState<ViewMode>("comfortable");
   const [noticias, setNoticias] = useState<Noticia[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
@@ -109,13 +144,36 @@ export default function SearchPage() {
 
   const tokens = useMemo(
     () =>
-      query
+      normalizeText(query)
         .trim()
-        .toLowerCase()
         .split(/\s+/)
         .filter(Boolean),
     [query]
   );
+
+  const suggestionTags = useMemo(() => {
+    const bag = new Map<string, number>();
+
+    for (const noticia of noticias) {
+      const text = `${noticia.titulo ?? ""} ${noticia.descripcion ?? ""}`;
+      const words = normalizeText(text).match(/[a-z0-9]{4,}/g) ?? [];
+
+      for (const word of words) {
+        if (stopWords.has(word)) continue;
+        if (/^\d+$/.test(word)) continue;
+        bag.set(word, (bag.get(word) ?? 0) + 1);
+      }
+    }
+
+    const selected = [...bag.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([word]) => formatSuggestionLabel(word));
+
+    if (selected.length > 0) return selected;
+
+    return ["Eventos", "Comunidad", "Talleres", "Campus"];
+  }, [noticias]);
 
   const filtered = useMemo(() => {
     const from = fromDate ? new Date(`${fromDate}T00:00:00`) : null;
@@ -123,8 +181,8 @@ export default function SearchPage() {
 
     const prepared = noticias
       .map((n) => {
-        const title = (n.titulo ?? "").toLowerCase();
-        const desc = (n.descripcion ?? "").toLowerCase();
+        const title = normalizeText(n.titulo ?? "");
+        const desc = normalizeText(n.descripcion ?? "");
         const fecha = n.fecha_hora ? new Date(n.fecha_hora) : null;
 
         let score = 0;
@@ -148,26 +206,16 @@ export default function SearchPage() {
         return true;
       });
 
-    const sorted = [...prepared].sort((a, b) => {
-      if (sort === "recent") {
-        const ad = a.fecha?.getTime() ?? 0;
-        const bd = b.fecha?.getTime() ?? 0;
-        return bd - ad;
+    return [...prepared].sort((a, b) => {
+      if (tokens.length > 0 && a.score !== b.score) {
+        return b.score - a.score;
       }
-
-      if (sort === "popular") {
-        return (b.id_noticia ?? 0) - (a.id_noticia ?? 0);
-      }
-
-      if (a.score !== b.score) return b.score - a.score;
 
       const ad = a.fecha?.getTime() ?? 0;
       const bd = b.fecha?.getTime() ?? 0;
       return bd - ad;
     });
-
-    return sorted;
-  }, [noticias, fromDate, toDate, sort, tokens]);
+  }, [noticias, fromDate, toDate, tokens]);
 
   const stats = useMemo(() => {
     const now = new Date();
@@ -193,7 +241,6 @@ export default function SearchPage() {
     setQuery(QUERY_DEFAULT);
     setFromDate("");
     setToDate("");
-    setSort("relevance");
   };
 
   return (
@@ -245,11 +292,15 @@ export default function SearchPage() {
 
                 <div className="flex flex-wrap items-center gap-2 text-xs">
                   <span className="text-muted">Sugerencias:</span>
-                  {quickTags.map((tag) => (
+                  {suggestionTags.map((tag) => (
                     <button
                       key={tag}
                       type="button"
-                      onClick={() => setQuery(tag)}
+                      onClick={() => {
+                        setQuery(tag);
+                        setFromDate("");
+                        setToDate("");
+                      }}
                       className="rounded-full border border-[#d8e4ec] bg-white px-3 py-1 font-semibold text-primary transition hover:border-accent/40 hover:text-accent"
                     >
                       {tag}
@@ -294,18 +345,6 @@ export default function SearchPage() {
                         onChange={(e) => setToDate(e.target.value)}
                         className="mt-1.5 w-full rounded-lg border border-[#d7e3eb] bg-white px-3 py-2 text-sm text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                       />
-                    </label>
-                    <label className="text-xs font-semibold text-muted">
-                      Ordenar por
-                      <select
-                        value={sort}
-                        onChange={(e) => setSort(e.target.value as SortKey)}
-                        className="mt-1.5 w-full rounded-lg border border-[#d7e3eb] bg-white px-3 py-2 text-sm text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
-                      >
-                        <option value="relevance">Relevancia</option>
-                        <option value="recent">Mas recientes</option>
-                        <option value="popular">Mas leidas</option>
-                      </select>
                     </label>
                   </div>
 
@@ -352,21 +391,31 @@ export default function SearchPage() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs">
-                  {(["relevance", "recent", "popular"] as const).map((key) => (
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <div className="ml-0 flex items-center gap-1 rounded-full border border-[#d8e4ec] bg-white p-0.5 sm:ml-1">
                     <button
-                      key={key}
                       type="button"
-                      onClick={() => setSort(key)}
-                      className={`rounded-full border px-3 py-1 font-semibold transition ${
-                        sort === key
-                          ? "border-accent/45 bg-accent/10 text-accent"
-                          : "border-[#d8e4ec] bg-white text-primary hover:border-accent/40 hover:text-accent"
+                      onClick={() => setViewMode("comfortable")}
+                      className={`rounded-full px-3 py-1 font-semibold transition ${
+                        viewMode === "comfortable"
+                          ? "bg-primary text-white"
+                          : "text-primary hover:text-accent"
                       }`}
                     >
-                      {key === "relevance" ? "Relevancia" : key === "recent" ? "Recientes" : "Populares"}
+                      Comoda
                     </button>
-                  ))}
+                    <button
+                      type="button"
+                      onClick={() => setViewMode("compact")}
+                      className={`rounded-full px-3 py-1 font-semibold transition ${
+                        viewMode === "compact"
+                          ? "bg-primary text-white"
+                          : "text-primary hover:text-accent"
+                      }`}
+                    >
+                      Compacta
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -406,11 +455,14 @@ export default function SearchPage() {
                     const readingMinutes = estimateReadingTime(
                       `${result.titulo ?? ""} ${result.descripcion ?? ""}`.trim()
                     );
+                    const compact = viewMode === "compact";
 
                     return (
                       <article
                         key={result.id_noticia}
-                        className="group grid gap-4 rounded-2xl border border-[#dce7ef] bg-white/95 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md motion-reduce:transform-none animate-rise"
+                        className={`group grid gap-4 rounded-2xl border border-[#dce7ef] bg-white/95 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md motion-reduce:transform-none animate-rise ${
+                          compact ? "p-4" : "p-5"
+                        }`}
                         style={{ animationDelay: `${idx * 55}ms` }}
                       >
                         <div className="flex flex-wrap items-center gap-3 text-xs text-muted">
@@ -425,16 +477,26 @@ export default function SearchPage() {
                           </span>
                         </div>
 
-                        <div className="grid gap-3 md:grid-cols-[170px_1fr]">
+                        <div
+                          className={`grid gap-3 ${
+                            compact ? "md:grid-cols-[128px_1fr]" : "md:grid-cols-[170px_1fr]"
+                          }`}
+                        >
                           <div
-                            className="h-[7.5rem] w-full rounded-xl bg-cover bg-center"
+                            className={`w-full rounded-xl bg-cover bg-center ${
+                              compact ? "h-24" : "h-[7.5rem]"
+                            }`}
                             style={{ backgroundImage: `url(${image})` }}
                           />
                           <div className="space-y-2">
-                            <h3 className="text-lg font-semibold text-primary transition-colors group-hover:text-accent">
+                            <h3
+                              className={`font-semibold text-primary transition-colors group-hover:text-accent ${
+                                compact ? "text-base" : "text-lg"
+                              }`}
+                            >
                               {result.titulo ?? "Sin titulo"}
                             </h3>
-                            <p className="line-clamp-2 text-sm text-muted">
+                            <p className={`text-sm text-muted ${compact ? "line-clamp-1" : "line-clamp-2"}`}>
                               {result.descripcion ?? "Resumen no disponible."}
                             </p>
                             <div className="flex flex-wrap items-center gap-4 text-xs text-muted">

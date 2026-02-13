@@ -8,6 +8,7 @@ import CreateNewsButton from "@/app/frontend/components/create-news-button";
 export default function Header() {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const syncFromUrl = () => {
@@ -26,6 +27,7 @@ export default function Header() {
   const goSearch = () => {
     const q = query.trim();
     router.push(q ? `/search?q=${encodeURIComponent(q)}` : "/search");
+    setMobileMenuOpen(false);
   };
 
   const handleLogout = () => {
@@ -35,22 +37,23 @@ export default function Header() {
     sessionStorage.removeItem("ifphub_user_email");
     sessionStorage.removeItem("ifphub_user_role");
     sessionStorage.removeItem("ifphub_user_role_uid");
+    setMobileMenuOpen(false);
     router.replace("/");
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#d9e4ec] bg-white/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-[#d3e0e8] bg-white/88 backdrop-blur-xl">
       <div className="mx-auto max-w-6xl px-4 py-3">
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/noticias"
-            className="inline-flex items-center gap-3 rounded-xl border border-transparent px-1 py-1 transition hover:border-[#dfe8ee]"
+            className="inline-flex items-center gap-3 rounded-xl border border-transparent px-1 py-1 transition hover:border-[#d8e4ec]"
           >
-            <div className="grid h-11 w-11 place-items-center rounded-xl bg-[linear-gradient(140deg,#102f45,#0b2537)] text-white font-black text-sm shadow-sm">
+            <div className="grid h-11 w-11 place-items-center rounded-xl border border-[#1b3f57] bg-[linear-gradient(140deg,#112c40,#0a1e2f)] text-white font-black text-sm shadow-sm">
               IF
             </div>
             <div className="hidden sm:block leading-tight">
-              <div className="text-sm font-bold tracking-wide text-primary">
+              <div className="font-display text-base font-semibold tracking-tight text-primary">
                 IFPHub Noticias
               </div>
               <div className="text-[11px] text-muted">
@@ -77,7 +80,7 @@ export default function Header() {
                 placeholder="Buscar noticias, eventos y recursos..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full rounded-xl border border-[#d7e3eb] bg-white px-10 py-2.5 text-sm text-primary shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                className="w-full rounded-xl border border-[#d2dfe8] bg-white px-10 py-2.5 text-sm text-primary shadow-sm transition placeholder:text-[#7a8c98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
               />
               <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold tracking-wide text-muted">
                 ENTER
@@ -85,33 +88,75 @@ export default function Header() {
             </div>
           </form>
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto hidden items-center gap-2 sm:flex">
             <Link
               href="/noticias"
-              className="hidden rounded-lg border border-[#d8e3ea] bg-white px-3 py-2 text-xs font-semibold text-primary transition hover:border-accent/40 hover:text-accent sm:inline-flex"
+              className="hidden rounded-lg border border-[#d2dfe8] bg-white px-3 py-2 text-xs font-semibold text-primary transition hover:border-accent/40 hover:text-accent sm:inline-flex"
             >
               Inicio
             </Link>
             <button
               type="button"
               onClick={goSearch}
-              className="rounded-lg border border-[#d8e3ea] bg-white px-3 py-2 text-xs font-semibold text-primary transition hover:border-accent/40 hover:text-accent"
+              className="rounded-lg border border-[#d2dfe8] bg-white px-3 py-2 text-xs font-semibold text-primary transition hover:border-accent/40 hover:text-accent"
             >
               Buscar
             </button>
             <CreateNewsButton
-              className="rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:opacity-90"
+              className="rounded-lg border border-[#cf723e] bg-[linear-gradient(140deg,#cb6325,#bc5314)] px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:opacity-92"
               label="Nueva"
             />
             <button
               type="button"
               onClick={handleLogout}
-              className="rounded-lg border border-[#f0d8d0] bg-white px-3 py-2 text-xs font-semibold text-[#b5481d] transition hover:border-[#e7b8a8] hover:text-[#9f3f18]"
+              className="rounded-lg border border-[#ecd2c7] bg-white px-3 py-2 text-xs font-semibold text-[#9e4c29] transition hover:border-[#deb4a3] hover:text-[#844024]"
             >
               Salir
             </button>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            className="ml-auto inline-flex h-9 items-center justify-center rounded-lg border border-[#d2dfe8] bg-white px-3 text-xs font-semibold text-primary transition hover:border-accent/40 hover:text-accent sm:hidden"
+            aria-label="Abrir menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            Menu
+          </button>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="mt-3 rounded-xl border border-[#d2dfe8] bg-white p-2 shadow-sm sm:hidden">
+            <div className="grid gap-2 text-xs">
+              <Link
+                href="/noticias"
+                onClick={() => setMobileMenuOpen(false)}
+                className="rounded-lg border border-[#d2dfe8] bg-white px-3 py-2 font-semibold text-primary transition hover:border-accent/40 hover:text-accent"
+              >
+                Inicio
+              </Link>
+              <button
+                type="button"
+                onClick={goSearch}
+                className="rounded-lg border border-[#d2dfe8] bg-white px-3 py-2 text-left font-semibold text-primary transition hover:border-accent/40 hover:text-accent"
+              >
+                Buscar
+              </button>
+              <CreateNewsButton
+                className="rounded-lg border border-[#cf723e] bg-[linear-gradient(140deg,#cb6325,#bc5314)] px-3 py-2 text-center font-semibold text-white transition hover:opacity-92"
+                label="Nueva noticia"
+              />
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="rounded-lg border border-[#ecd2c7] bg-white px-3 py-2 text-left font-semibold text-[#9e4c29] transition hover:border-[#deb4a3] hover:text-[#844024]"
+              >
+                Cerrar sesion
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
