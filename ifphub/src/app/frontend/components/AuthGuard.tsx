@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function AuthGuard({
   children,
@@ -11,9 +11,6 @@ export default function AuthGuard({
   allowedRoles?: readonly string[];
 }) {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
@@ -26,7 +23,6 @@ export default function AuthGuard({
       let storedRole =
         sessionStorage.getItem("ifphub_user_role")?.trim().toLowerCase() ?? "";
 
-      // 🚫 No logeado → fuera
       if (!storedUid || !storedSig) {
         router.replace("/");
         return;
@@ -35,19 +31,6 @@ export default function AuthGuard({
       if (storedRole && storedRoleUid && storedRoleUid !== String(storedUid)) {
         sessionStorage.removeItem("ifphub_user_role");
         storedRole = "";
-      }
-
-      const urlUid = searchParams.get("uid");
-      const urlSig = searchParams.get("sig");
-
-      // 🔁 Añadir / corregir params en la URL
-      if (urlUid !== storedUid || urlSig !== storedSig) {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set("uid", storedUid);
-        params.set("sig", storedSig);
-
-        router.replace(`${pathname}?${params.toString()}`);
-        return; // ⛔ esperamos al siguiente render
       }
 
       if (allowedRoles && allowedRoles.length > 0) {
@@ -74,12 +57,11 @@ export default function AuthGuard({
         }
 
         if (!storedRole || !allowedRoles.includes(storedRole)) {
-          router.replace(`/noticias?uid=${storedUid}&sig=${storedSig}`);
+          router.replace("/noticias");
           return;
         }
       }
 
-      // ✅ Todo OK
       if (active) setChecked(true);
     };
 
@@ -88,9 +70,8 @@ export default function AuthGuard({
     return () => {
       active = false;
     };
-  }, [router, pathname, searchParams, allowedRoles]);
+  }, [router, allowedRoles]);
 
-  // ⛔ No renderiza nada hasta validar
   if (!checked) return null;
 
   return <>{children}</>;

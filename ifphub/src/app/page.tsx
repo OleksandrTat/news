@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,7 @@ export default function AuthPage() {
     const sig = sessionStorage.getItem("sig");
 
     if (uid && sig) {
-      router.replace(`/noticias?uid=${uid}&sig=${sig}`);
+      router.replace("/noticias");
     }
   }, [router]);
 
@@ -27,101 +27,90 @@ export default function AuthPage() {
     setErrorMsg("");
     setLoading(true);
 
-    if (isLogin) {
-      // LOGIN
-      const res = await fetch("/api/usuario/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+    try {
+      if (isLogin) {
+        const res = await fetch("/api/usuario/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
 
-      const result = await res.json();
+        const result = await res.json();
 
-      if (!res.ok) {
-        setErrorMsg(result.error);
-      } else {
-        // Recibimos uid + sig del backend
-        console.log("RESULTADO LOGIN:", result);
-
-        const uid = result.usuario.uid;
-        const sig = result.usuario.sig;
-        const nombre = result.usuario.nombre ?? "";
-        const apellido = result.usuario.apellido ?? "";
-        const mail =
-          result.usuario.mail ??
-          result.usuario.email ??
-          email ??
-          "";
-        const rol = (result.usuario.rol ?? "").trim().toLowerCase();
-        const fullName = [nombre, apellido].filter(Boolean).join(" ").trim();
-
-        if (fullName) {
-          sessionStorage.setItem("ifphub_user_name", fullName);
-        }
-
-        if (mail) {
-          sessionStorage.setItem("ifphub_user_email", mail);
-        }
-
-        sessionStorage.setItem("ifphub_user_role_uid", String(uid));
-        if (rol) {
-          sessionStorage.setItem("ifphub_user_role", rol);
+        if (!res.ok) {
+          setErrorMsg(result.error);
         } else {
-          sessionStorage.removeItem("ifphub_user_role");
+          const uid = String(result.usuario.uid);
+          const sig = String(result.usuario.sig);
+          const userNombre = result.usuario.nombre ?? "";
+          const userApellido = result.usuario.apellido ?? "";
+          const mail = result.usuario.mail ?? result.usuario.email ?? email ?? "";
+          const rol = (result.usuario.rol ?? "").trim().toLowerCase();
+          const fullName = [userNombre, userApellido].filter(Boolean).join(" ").trim();
+
+          if (fullName) {
+            sessionStorage.setItem("ifphub_user_name", fullName);
+          }
+
+          if (mail) {
+            sessionStorage.setItem("ifphub_user_email", mail);
+          }
+
+          sessionStorage.setItem("ifphub_user_role_uid", uid);
+          if (rol) {
+            sessionStorage.setItem("ifphub_user_role", rol);
+          } else {
+            sessionStorage.removeItem("ifphub_user_role");
+          }
+
+          sessionStorage.setItem("uid", uid);
+          sessionStorage.setItem("sig", sig);
+
+          router.replace("/noticias");
         }
-
-        sessionStorage.setItem("uid", uid);
-        sessionStorage.setItem("sig", sig);
-
-        window.location.href = `/noticias?uid=${uid}&sig=${sig}`;
-      }
-    } else {
-      // REGISTRO
-      const res = await fetch("/api/usuario/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre,
-          apellido,
-          email,
-          password,
-          fecha_nacimiento: null,
-          id_curso: null,
-        }),
-      });
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        setErrorMsg(result.error);
       } else {
-        // Registro correcto → usuario debe iniciar sesión manualmente
-        window.location.href = "/";
-      }
-    }
+        const res = await fetch("/api/usuario/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nombre,
+            apellido,
+            email,
+            password,
+            fecha_nacimiento: null,
+            id_curso: null,
+          }),
+        });
 
-    setLoading(false);
+        const result = await res.json();
+
+        if (!res.ok) {
+          setErrorMsg(result.error);
+        } else {
+          router.replace("/");
+        }
+      }
+    } catch {
+      setErrorMsg("No se pudo completar la solicitud.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f8f9fb] px-4">
       <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-pink-100">
-        
-        {/* Header */}
         <h1 className="text-2xl font-semibold text-[#0E4A54] text-center mb-2">
           {isLogin ? "Bienvenido de nuevo" : "Crear cuenta"}
         </h1>
         <p className="text-center text-gray-500 mb-6">
-          {isLogin ? "Inicia sesión para continuar" : "Regístrate para acceder al portal"}
+          {isLogin ? "Inicia sesion para continuar" : "Registrate para acceder al portal"}
         </p>
 
-        {/* Form */}
         <form className="space-y-5" onSubmit={handleSubmit}>
-
-          {/* CAMPOS EXTRA SOLO PARA REGISTRO */}
           {!isLogin && (
             <>
               <div>
@@ -156,7 +145,7 @@ export default function AuthPage() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Correo electrónico
+              Correo electronico
             </label>
             <input
               type="email"
@@ -170,7 +159,7 @@ export default function AuthPage() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Contraseña
+              Contrasena
             </label>
             <input
               type="password"
@@ -178,7 +167,7 @@ export default function AuthPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-xl border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-pink-300 focus:outline-none"
-              placeholder="••••••••"
+              placeholder="********"
             />
           </div>
 
@@ -194,19 +183,18 @@ export default function AuthPage() {
             {loading
               ? "Cargando..."
               : isLogin
-              ? "Iniciar sesión"
+              ? "Iniciar sesion"
               : "Crear cuenta"}
           </button>
         </form>
 
-        {/* Toggle Login/Register */}
         <p className="text-center text-sm text-gray-600 mt-6">
-          {isLogin ? "¿No tienes cuenta?" : "¿Ya tienes una cuenta?"}{" "}
+          {isLogin ? "No tienes cuenta?" : "Ya tienes una cuenta?"}{" "}
           <button
             onClick={() => setIsLogin(!isLogin)}
             className="text-pink-500 font-medium hover:underline"
           >
-            {isLogin ? "Crear cuenta" : "Iniciar sesión"}
+            {isLogin ? "Crear cuenta" : "Iniciar sesion"}
           </button>
         </p>
       </div>

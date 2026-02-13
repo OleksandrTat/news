@@ -1,6 +1,8 @@
-"use client";
+﻿"use client";
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 type Noticia = {
   id_usuario: number;
@@ -13,10 +15,9 @@ type Noticia = {
 const getPicsum = (seed: string | number, w = 200, h = 200) =>
   `https://picsum.photos/seed/${encodeURIComponent(String(seed))}/${w}/${h}`;
 
-export default function Sidebar({ uid, sig }: { uid?: string; sig?: string }) {
+export default function Sidebar() {
   const [noticias, setNoticias] = useState<Noticia[]>([]);
   const [loading, setLoading] = useState(true);
-  const query = uid && sig ? `?uid=${uid}&sig=${sig}` : "";
 
   useEffect(() => {
     fetch("/api/noticias")
@@ -59,9 +60,9 @@ export default function Sidebar({ uid, sig }: { uid?: string; sig?: string }) {
 
           {!loading &&
             noticias.slice(0, 3).map((n) => (
-              <a
+              <Link
                 key={n.id_noticia}
-                href={`/detail/${n.id_noticia}${query}`}
+                href={`/detail/${n.id_noticia}`}
                 className="flex gap-3 items-center p-2 rounded-md hover:bg-[#f3f6f7] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
               >
                 <div className="relative w-14 h-14 rounded-md overflow-hidden shrink-0">
@@ -83,7 +84,7 @@ export default function Sidebar({ uid, sig }: { uid?: string; sig?: string }) {
                     {new Date(n.fecha_hora).toLocaleDateString("es-ES")}
                   </p>
                 </div>
-              </a>
+              </Link>
             ))}
         </div>
       </section>
